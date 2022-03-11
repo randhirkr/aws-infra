@@ -2,8 +2,8 @@
 Infrastructure as a code for AWS resources using cloudformation
 
 ### Pre-requisites:
-* AWS CLI
-* Setup aws credential in local environment for authentication using AWS CLI 
+* Setup [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) 
+* Configure credential in local environment for authentication using AWS CLI as shown below: 
 ```
 aws configure
 ```
@@ -15,7 +15,8 @@ Default region name [ap-south-1]: <region name>
 Default output format [None]:
 ```
 
-Clone the project and run below command from root folder(aws-infra) to create vpc stack:
+### VPC setup
+Run below command from root folder(aws-infra) to create vpc stack:
 ```
 aws cloudformation create-stack --stack-name ran --template-body file://vpc.yaml
 ```
