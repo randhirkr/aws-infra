@@ -1,9 +1,9 @@
 # aws-infra
 Infrastructure as a code for AWS resources using cloudformation
 
-Pre-requisites:
-AWS CLI
-Setup aws credential in local environment for authentication using AWS CLI 
+###Pre-requisites:
+* AWS CLI
+* Setup aws credential in local environment for authentication using AWS CLI 
 ```
 aws configure
 ```
