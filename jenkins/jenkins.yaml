@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: jenkins setup
+
+Parameters:
+  SubnetID:
+    Type: AWS::EC2::Subnet::Id
+    Description: public subnet
+    Default: subnet-0464b9b3fd5fd36e1
+
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: t2.micro
+
+  EC2Role:
+    Description: EC2 role
+    Type: String
+    Default: jenkins-role
+
+  SecurityGroupIDs:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: List of Security Groups to add to EC2 instance
+    Default: sg-0c33b854b9330aaf5
+
+Mappings:
+  AWSRegionToAMI:
+    ap-south-1:
+      AMIID: ami-0e0ff68cb8e9a188a
+
+Resources:
+  EC2Profile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref EC2Role
+
+  EC2Instance:
+    Type: AWS::EC2::Instance                     
+    Properties:
+      ImageId:
+        !FindInMap                                 
+          - AWSRegionToAMI                         # It accepts three parameters each denoted by a hyphen (-)
+          - !Ref AWS::Region
+          - AMIID
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds: !Ref SecurityGroupIDs
+      SubnetId: !Ref SubnetID
+      IamInstanceProfile: !Ref EC2Profile
+      UserData:
+        Fn::Base64:                                
+          !Sub |
+              #!/bin/bash -ex
+              sudo yum update -y
+              sudo amazon-linux-extras install corretto8
+              sudo yum install jq unzip git -y
+              sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+              sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+              sudo yum install jenkins -y
+              sudo service jenkins start
+      Tags:                                      # Tags are an example of a sequence of mappings in YAML,
+        -                                        # each key/value pair is separated by a hyphen
+          Key: Name
+          Value: jenkins-server      
+        -
+          Key: Env
+          Value: Dev
+
+  IPAddress:
+    Type: 'AWS::EC2::EIP'
+  IPAssoc:
+    Type: 'AWS::EC2::EIPAssociation'
+    Properties:
+      InstanceId: !Ref EC2Instance
+      EIP: !Ref IPAddress
+
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created EC2 instance
+    Value: !Ref EC2Instance
+  InstanceIPAddress:
+    Description: IP address of the newly created EC2 instance
+    Value: !Ref IPAddress
