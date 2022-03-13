@@ -7,6 +7,11 @@ Parameters:
     Description: public subnet
     Default: subnet-0464b9b3fd5fd36e1
 
+  VolumeSize:
+    Description: EC2 Volume Size
+    Type: Number
+    Default: 20
+
   InstanceType:
     Description: EC2 instance type
     Type: String
@@ -44,6 +49,11 @@ Resources:
           - !Ref AWS::Region
           - AMIID
       InstanceType: !Ref InstanceType
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref VolumeSize
+
       SecurityGroupIds: !Ref SecurityGroupIDs
       SubnetId: !Ref SubnetID
       IamInstanceProfile: !Ref EC2Profile

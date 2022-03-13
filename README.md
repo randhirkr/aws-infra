@@ -26,3 +26,14 @@ Sample output:
     "StackId": "arn:aws:cloudformation:ap-south-1:<account-id>:stack/ran/0c7f7090-a0c6-11ec-be0d-028f52b83b4e"
 } 
 ```
+
+### Jenkins setup
+Run below command from jenkins folder to provision Jenkins server:
+```
+aws cloudformation create-stack --stack-name jenkins --template-body file://jenkins.yaml --capabilities CAPABILITY_IAM
+```
+
+For deleting, run below command:
+```
+aws cloudformation delete-stack --stack-name jenkins
+```
