@@ -37,3 +37,19 @@ For deleting, run below command:
 ```
 aws cloudformation delete-stack --stack-name jenkins
 ```
+
+### EKS k8s setup
+Create cluster:
+```
+eksctl create cluster -f k8s-cluster.yaml 
+```
+
+Delete cluster
+```
+eksctl delete cluster -f k8s-cluster.yaml
+```
+
+Verify nodes - kubectl command should work with "~/.kube/config", try below command to get node details:
+```
+kubectl get nodes
+```
